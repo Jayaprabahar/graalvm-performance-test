@@ -26,4 +26,4 @@ https://github.com/hatoo/oha
 
 Installation: -
 
-![screenshot](test_results/install_oha.png)
+![screenshot](results_jdk/install_oha.png)
