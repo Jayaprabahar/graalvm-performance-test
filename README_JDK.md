@@ -6,7 +6,7 @@
 ![screenshot](results_jdk/build_image_size_JDK.png)
 
 ### 1.1 Time to Build
-![screenshot](build_time_JDK.png)
+![screenshot](results_jdk/build_time_JDK.png)
 
 
 ## 2. Start-up Time

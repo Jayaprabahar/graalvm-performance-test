@@ -131,10 +131,6 @@
                         <buildArg>--enable-all-security-services</buildArg>
                         <buildArg>--initialize-at-build-time=org.apache.commons.lang3.math.NumberUtils</buildArg>
                         <buildArg>--initialize-at-build-time=org.apache.commons.lang3.StringUtils</buildArg>
-                        <buildArg>--initialize-at-build-time=org.apache.commons.lang3.text.WordUtils</buildArg>
-                        <buildArg>--initialize-at-build-time=org.apache.commons.lang3.text.StrBuilder</buildArg>
-                        <buildArg>--initialize-at-build-time=org.apache.commons.lang3.text.StrTokenizer</buildArg>
-                        <buildArg>--initialize-at-build-time=org.apache.commons.lang3.text.StrSubstitutor</buildArg>
                     </buildArgs>
                 </configuration>
                 <executions>
