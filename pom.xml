@@ -1,58 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
         <version>4.0.0-SNAPSHOT</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
-	<groupId>io.jayaprabahar.graalvm</groupId>
-	<artifactId>graalvm-performance-test</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>graalvm-performance-test</name>
-	<description>Demo project to compare the performance of GraalVM with normal java</description>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
-	<properties>
-		<java.version>25</java.version>
-		<lombok.version>1.18.42</lombok.version>
-	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-		</dependency>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>io.jayaprabahar.graalvm</groupId>
+    <artifactId>graalvm-performance-test</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>graalvm-performance-test</name>
+    <description>Demo project to compare the performance of GraalVM with normal java</description>
+    <url/>
+    <licenses>
+        <license/>
+    </licenses>
+    <developers>
+        <developer/>
+    </developers>
+    <scm>
+        <connection/>
+        <developerConnection/>
+        <tag/>
+        <url/>
+    </scm>
+    <properties>
+        <java.version>25</java.version>
+        <lombok.version>1.18.42</lombok.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.main-class>org.example.demo.DemoApplication</project.main-class>
+        <native.maven.plugin.version>0.11.1</native.maven.plugin.version>
+    </properties>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+    <dependencies>
+        <!-- Added: Spring Web for REST controllers -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
 
-		<!-- Added: Spring Web for REST controllers -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-
-		<!-- Added: Spring Data MongoDB -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb</artifactId>
-		</dependency>
+        <!-- Added: Spring Data MongoDB -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -60,43 +55,62 @@
             <version>3.19.0</version>
         </dependency>
 
-		<!-- Added: Lombok to reduce boilerplate -->
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>${lombok.version}</version>
-			<scope>provided</scope>
-		</dependency>
+        <!-- Added: Lombok to reduce boilerplate -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
-		<!-- Added: Actuator and Micrometer for metrics (@Timed) -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.micrometer</groupId>
-			<artifactId>micrometer-core</artifactId>
-		</dependency>
-	</dependencies>
+        <!-- Added: Actuator and Micrometer for metrics (@Timed) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId>
+        </dependency>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.14.1</version>
-				<configuration>
-					<release>${java.version}</release>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-							<version>${lombok.version}</version>
-						</path>
-					</annotationProcessorPaths>
-					<fork>true</fork>
-				</configuration>
-			</plugin>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${parent.version}</version>
+                <configuration>
+                    <mainClass>io.jayaprabahar.graalvm.graalvm_performance_test.GraalvmPerformanceTestApplication</mainClass>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.14.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <compilerArgs>--enable-preview</compilerArgs>
+                    <release>${java.version}</release>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <fork>true</fork>
+                </configuration>
+            </plugin>
+<!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -110,78 +124,26 @@
                     </archive>
                 </configuration>
             </plugin>
+-->
 
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
-                <version>0.11.1</version>
+                <version>${native.maven.plugin.version}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <imageName>${project.artifactId}</imageName>
-                    <mainClass>io.jayaprabahar.graalvm.graalvm_performance_test.GraalvmPerformanceTestApplication</mainClass>
+                    <mainClass>io.jayaprabahar.graalvm.graalvm_performance_test.GraalvmPerformanceTestApplication
+                    </mainClass>
                     <buildArgs>
                         <buildArg>-Ob</buildArg>
-                        <buildArg>--emit build-report</buildArg>
-                        <buildArg>--future-defaults=all</buildArg>
-                        <buildArg>-J-Xmx2G</buildArg>
+                        <buildArg>-J-Xmx4G</buildArg>
                         <buildArg>-march=native</buildArg>
-                        <buildArg>--no-fallback</buildArg>
-                        <buildArg>--enable-http</buildArg>
-                        <buildArg>--enable-https</buildArg>
-                        <buildArg>--enable-all-security-services</buildArg>
-                        <buildArg>--initialize-at-build-time=org.apache.commons.lang3.math.NumberUtils</buildArg>
-                        <buildArg>--initialize-at-build-time=org.apache.commons.lang3.StringUtils</buildArg>
                     </buildArgs>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>build-native</id>
-                        <goals>
-                            <goal>compile-no-fork</goal>
-                        </goals>
-                        <phase>package</phase>
-                    </execution>
-                </executions>
             </plugin>
 
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>4.0.0-M3</version>
-				<configuration>
-					<mainClass>io.jayaprabahar.graalvm.graalvm_performance_test.GraalvmPerformanceTestApplication</mainClass>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
-    <profiles>
-        <profile>
-            <id>native</id>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.springframework.boot</groupId>
-                            <artifactId>spring-boot-maven-plugin</artifactId>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.graalvm.buildtools</groupId>
-                            <artifactId>native-maven-plugin</artifactId>
-                            <version>0.11.1</version>
-                            <executions>
-                                <execution>
-                                    <id>build-image</id>
-                                    <goals>
-                                        <goal>compile-no-fork</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-    </profiles>
+        </plugins>
+    </build>
 
 </project>

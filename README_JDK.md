@@ -39,51 +39,51 @@
 2025-10-14T01:20:12.039+02:00  INFO 10192 --- [graalvm-performance-test] [)-192.168.1.202] [ ] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
 ```
 
-## 3. GET API - Fetch 100000 records with concurrency 10 from MongoDB
+## 3. GET API - Fetch 1000000 records with concurrency 10 from MongoDB
 
 ```
-oha -n 100000 -c 10 http://localhost:8080/api/employees
-```
-
-#### Progress
-![screenshot](results_jdk/100000_No_Data_GET_Progress.png)
-#### Results
-![screenshot](results_jdk/100000_No_Data_GET_Results.png)
-
-
-## 4. POST API - Insert 100000 records into MongoDB
-```
-oha -n 100000 -c 10 http://localhost:8080/api/employees/new -m POST
+oha -n 1000000 -c 10 http://localhost:8080/api/employees
 ```
 
 #### Progress
-![screenshot](results_jdk/100000_Insert_POST_Progress_1.png)
-![screenshot](results_jdk/100000_Insert_POST_Progress_2.png)
+![screenshot](results_jdk/1000000_No_Data_GET_Progress.png)
+#### Results
+![screenshot](results_jdk/1000000_No_Data_GET_Results.png)
+
+
+## 4. POST API - Insert 1000000 records into MongoDB
+```
+oha -n 1000000 -c 10 http://localhost:8080/api/employees/new -m POST
+```
+
+#### Progress
+![screenshot](results_jdk/1000000_Insert_POST_Progress_1.png)
+![screenshot](results_jdk/1000000_Insert_POST_Progress_2.png)
 
 #### Results
-![screenshot](results_jdk/100000_Insert_POST_Results.png)
+![screenshot](results_jdk/1000000_Insert_POST_Results.png)
 
-## 5. GET API - (After inserting 100000 records)
+## 5. GET API - (After inserting 1000000 records)
 ```
-oha -n 100000 -c 100 http://localhost:8080/api/employees/
+oha -n 1000000 -c 100 http://localhost:8080/api/employees/
 ```
 
 #### Progress without Index
-![screenshot](results_jdk/100000_With_Data_GET_Progress_1.png)
-![screenshot](results_jdk/100000_With_Data_GET_Progress_2.png)
+![screenshot](results_jdk/1000000_With_Data_GET_Progress_1.png)
+![screenshot](results_jdk/1000000_With_Data_GET_Progress_2.png)
 
 #### Results without Index
-![screenshot](results_jdk/100000_With_Data_GET_Results.png)
+![screenshot](results_jdk/1000000_With_Data_GET_Results.png)
 ![screenshot](results_jdk/CPU_Hung.png)
 
-## 5. GET API - (After inserting 100000 records with index)
+## 5. GET API - (After inserting 1000000 records with index)
 
 ### Create Index on empId field in MongoDB 
 ![screenshot](results_jdk/Index_Created.png)
 
 #### Progress with Index
-![screenshot](results_jdk/100000_With_Data_GET_Progress_WithIndex_1.png)
-![screenshot](results_jdk/100000_With_Data_GET_Progress_WithIndex_2.png)
+![screenshot](results_jdk/1000000_With_Data_GET_Progress_WithIndex_1.png)
+![screenshot](results_jdk/1000000_With_Data_GET_Progress_WithIndex_2.png)
 
 #### Results with Index
-![screenshot](results_jdk/100000_With_Data_GET_WithIndex_Results.png)
+![screenshot](results_jdk/1000000_With_Data_GET_WithIndex_Results.png)
