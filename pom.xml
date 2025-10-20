@@ -12,7 +12,7 @@
     <artifactId>graalvm-performance-test</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>graalvm-performance-test</name>
-    <description>Demo project to compare the performance of GraalVM with normal java</description>
+    <description>Demo project to compare the performance of GraalVM with OpenJDK</description>
     <url/>
     <licenses>
         <license/>
@@ -85,7 +85,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.parent.version}</version>
                 <configuration>
                     <mainClass>io.jayaprabahar.graalvm.graalvm_performance_test.GraalvmPerformanceTestApplication</mainClass>
                 </configuration>
@@ -110,22 +110,6 @@
                     <fork>true</fork>
                 </configuration>
             </plugin>
-<!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.4.2</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>io.jayaprabahar.graalvm.graalvm_performance_test.GraalvmPerformanceTestApplication</mainClass>
-                            <addClasspath>true</addClasspath>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
--->
-
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
@@ -133,11 +117,10 @@
                 <extensions>true</extensions>
                 <configuration>
                     <imageName>${project.artifactId}</imageName>
-                    <mainClass>io.jayaprabahar.graalvm.graalvm_performance_test.GraalvmPerformanceTestApplication
-                    </mainClass>
+                    <mainClass>io.jayaprabahar.graalvm.graalvm_performance_test.GraalvmPerformanceTestApplication</mainClass>
                     <buildArgs>
                         <buildArg>-Ob</buildArg>
-                        <buildArg>-J-Xmx4G</buildArg>
+                        <buildArg>-J-Xmx16G</buildArg>
                         <buildArg>-march=native</buildArg>
                     </buildArgs>
                 </configuration>

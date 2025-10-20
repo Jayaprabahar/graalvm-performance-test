@@ -1,9 +1,17 @@
 # Application using GraalVM JDK 25
 
-## 0. Pre-requesties
+## Pre-requesties
 * Install GraalVM JDK 25 https://www.graalvm.org/latest/getting-started/windows/
 
-## 1. Build
+## 1 Build
+### 1.1 Build Steps
+```
+mvn clean compile
+mvn spring-boot:process-aot
+mvn native:compile
+```
+
+### 1.2 Build Log
 
 ```
   .   ____          _            __ _ _
@@ -143,21 +151,69 @@ Finished generating 'graalvm-performance-test' in 5m 16s.
 [INFO] Total time:  05:45 min
 [INFO] Finished at: 2025-10-17T00:02:57+02:00
 [INFO] ------------------------------------------------------------------------
+```
 
+### 1.3 Build Size
+![screenshot](results_graalvm/build_image_size_GraalVM.png)
+
+### 1.4 Build Time
+![screenshot](results_graalvm/build_time_GraalVM.png)
+
+### 1.5 Build Impact on RAM
+GraalVM Build creation has higher impact on RAM.
+
+This can be tested by adjusting Xmx JVM argument inside org.graalvm.buildtools -> native-maven-plugin.
+
+```
+<plugin>
+    <groupId>org.graalvm.buildtools</groupId>
+    <artifactId>native-maven-plugin</artifactId>
+    .
+    .
+            <buildArg>-J-Xmx16G</buildArg>                      
+```
+#### Build Performance with 2 GB JVM Config
+![screenshot](results_graalvm/build_cpu_2GB_RAM.png)
+#### Build Performance with 16 GB JVM Config
+![screenshot](results_graalvm/build_cpu_16GB_RAM.png)
+#### Build Performance with 32 GB JVM Config
+![screenshot](results_graalvm/build_cpu_32GB_RAM.png)
+
+### 1.5 Build Impact on CPU
+GraalVM Build has higher impact on CPU, due to RAM. This is because after creating usual spring-boot executable jar, it starts native image compilation process. 
+
+```
+[INFO] --- jar:3.4.2:jar (default-jar) @ graalvm-performance-test ---
+[INFO] Building jar: C:\Users\Jayap\IdeaProjects\graalvm-performance-test\target\graalvm-performance-test-0.0.1-SNAPSHOT.jar
+[INFO]
+[INFO] --- spring-boot:4.0.0-SNAPSHOT:repackage (repackage) @ graalvm-performance-test ---
+[INFO] Replacing main artifact C:\Users\Jayap\IdeaProjects\graalvm-performance-test\target\graalvm-performance-test-0.0.1-SNAPSHOT.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to C:\Users\Jayap\IdeaProjects\graalvm-performance-test\target\graalvm-performance-test-0.0.1-SNAPSHOT.jar.original
+[INFO]
+[INFO] <<< native:0.11.1:compile (default-cli) < package @ graalvm-performance-test <<<
+[INFO] Found GraalVM installation from GRAALVM_HOME variable.
+[INFO] Downloaded GraalVM reachability metadata repository from file:/C:/Users/Jayap/.m2/repository/org/graalvm/buildtools/graalvm-reachability-metadata/0.11.1/graalvm-reachability-metadata-0.11.1-repository.zip
+```
+
+This requires lot of sequential steps, to finally create a native executable file. (*.exe for windows)
+
+```
+[1/8] Initializing...                                                                                   (18.7s @ 0.29GB)
+[2/8] Performing analysis...  [******]                                                                 (152.3s @ 3.11GB)
+[3/8] Building universe...                                                                              (19.9s @ 3.49GB)
+[4/8] Parsing methods...      [****]                                                                    (15.8s @ 3.78GB)
+[5/8] Inlining methods...     [***]                                                                      (8.1s @ 3.94GB)
+[6/8] Compiling methods...    [**********]                                                              (96.5s @ 3.01GB)
+[7/8] Laying out methods...   [****]                                                                    (19.6s @ 3.87GB)
+[8/8] Creating image...       [****]                                                                    (13.2s @ 4.39GB)
 ```
 
 
-### 1.1 Image Size
-![screenshot](results_jdk/build_image_size_JDK.png)
-
-### 1.1 Time to Build
-![screenshot](build_time_JDK.png)
-
+![screenshot](results_graalvm/build_time_GraalVM.png)
 
 ## 2. Start-up Time
 
 ```
-
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
 ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
@@ -167,65 +223,51 @@ Finished generating 'graalvm-performance-test' in 5m 16s.
 
  :: Spring Boot ::       (v4.0.0-SNAPSHOT)
 
-2025-10-17T00:03:22.139+02:00  INFO 17592 --- [graalvm-performance-test] [           main] [                                                 ] .j.g.g.GraalvmPerformanceTestApplication : Starting AOT-processed GraalvmPerformanceTestApplication using Java 25 with PID 17592 (C:\Users\Jayap\IdeaProjects\graalvm-performance-test\target\graalvm-performance-test.exe started by Jayap in C:\Users\Jayap\IdeaProjects\graalvm-performance-test\target)
-2025-10-17T00:03:22.139+02:00  INFO 17592 --- [graalvm-performance-test] [           main] [                                                 ] .j.g.g.GraalvmPerformanceTestApplication : No active profile set, falling back to 1 default profile: "default"
-2025-10-17T00:03:22.181+02:00  INFO 17592 --- [graalvm-performance-test] [           main] [                                                 ] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
-2025-10-17T00:03:22.184+02:00  INFO 17592 --- [graalvm-performance-test] [           main] [                                                 ] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-10-17T00:03:22.184+02:00  INFO 17592 --- [graalvm-performance-test] [           main] [                                                 ] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.13]
-2025-10-17T00:03:22.209+02:00  INFO 17592 --- [graalvm-performance-test] [           main] [                                                 ] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 69 ms
-2025-10-17T00:03:22.258+02:00  INFO 17592 --- [graalvm-performance-test] [           main] [                                                 ] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|spring-boot|sync", "version": "5.6.1"}, "os": {"type": "Windows", "name": "Windows 11", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Oracle Corporation/25+37-LTS-jvmci-b01"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, transportSettings=null, commandListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsCommandListener@38bbcbc5], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, CollectionCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, com.mongodb.client.model.mql.ExpressionCodecProvider@11f69806, com.mongodb.Jep395RecordCodecProvider@7302a632, com.mongodb.KotlinCodecProvider@42d56503, EnumCodecProvider{}]}, loggerSettings=LoggerSettings{maxDocumentLength=1000}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='15 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsConnectionPoolListener@1aa31595], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverMonitoringMode=AUTO, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=UNSPECIFIED, serverApi=null, autoEncryptionSettings=null, dnsClient=null, inetAddressResolver=null, contextProvider=null, timeoutMS=null}
-2025-10-17T00:03:22.270+02:00  INFO 17592 --- [graalvm-performance-test] [localhost:27017] [                                                 ] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, cryptd=false, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=27, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=2051300, minRoundTripTimeNanos=0}
-2025-10-17T00:03:22.392+02:00  WARN 17592 --- [graalvm-performance-test] [           main] [                                                 ] i.m.c.i.binder.jvm.JvmGcMetrics          : GC notifications will not be available because no GarbageCollectorMXBean of the JVM provides any. GCs=[young generation scavenger, complete scavenger]
-2025-10-17T00:03:22.404+02:00  INFO 17592 --- [graalvm-performance-test] [           main] [                                                 ] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
-2025-10-17T00:03:22.439+02:00  INFO 17592 --- [graalvm-performance-test] [           main] [                                                 ] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
-2025-10-17T00:03:22.442+02:00  INFO 17592 --- [graalvm-performance-test] [           main] [                                                 ] .j.g.g.GraalvmPerformanceTestApplication : Started GraalvmPerformanceTestApplication in 0.333 seconds (process running for 0.367)
+2025-10-20T14:21:37.601+02:00  INFO 15124 --- [graalvm-performance-test] [           main] [                                                 ] .j.g.g.GraalvmPerformanceTestApplication : Starting AOT-processed GraalvmPerformanceTestApplication using Java 25 with PID 15124 (C:\Users\Jayap\IdeaProjects\graalvm-performance-test\target\graalvm-performance-test.exe started by Jayap in C:\Users\Jayap\IdeaProjects\graalvm-performance-test\target)
+2025-10-20T14:21:37.601+02:00  INFO 15124 --- [graalvm-performance-test] [           main] [                                                 ] .j.g.g.GraalvmPerformanceTestApplication : No active profile set, falling back to 1 default profile: "default"
+2025-10-20T14:21:37.642+02:00  INFO 15124 --- [graalvm-performance-test] [           main] [                                                 ] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2025-10-20T14:21:37.645+02:00  INFO 15124 --- [graalvm-performance-test] [           main] [                                                 ] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-10-20T14:21:37.645+02:00  INFO 15124 --- [graalvm-performance-test] [           main] [                                                 ] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.13]
+2025-10-20T14:21:37.670+02:00  INFO 15124 --- [graalvm-performance-test] [           main] [                                                 ] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 68 ms
+2025-10-20T14:21:37.702+02:00  INFO 15124 --- [graalvm-performance-test] [           main] [                                                 ] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|spring-boot|sync", "version": "5.6.1"}, "os": {"type": "Windows", "name": "Windows 11", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Oracle Corporation/25+37-LTS-jvmci-b01"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, transportSettings=null, commandListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsCommandListener@39aee617], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, CollectionCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, com.mongodb.client.model.mql.ExpressionCodecProvider@30aeb75a, com.mongodb.Jep395RecordCodecProvider@d88b7a4, com.mongodb.KotlinCodecProvider@8ae6c19, EnumCodecProvider{}]}, loggerSettings=LoggerSettings{maxDocumentLength=1000}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='15 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsConnectionPoolListener@78d193d1], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverMonitoringMode=AUTO, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=UNSPECIFIED, serverApi=null, autoEncryptionSettings=null, dnsClient=null, inetAddressResolver=null, contextProvider=null, timeoutMS=null}
+2025-10-20T14:21:37.711+02:00  INFO 15124 --- [graalvm-performance-test] [localhost:27017] [                                                 ] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, cryptd=false, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=27, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=1120300, minRoundTripTimeNanos=0}
+2025-10-20T14:21:37.757+02:00  WARN 15124 --- [graalvm-performance-test] [           main] [                                                 ] i.m.c.i.binder.jvm.JvmGcMetrics          : GC notifications will not be available because no GarbageCollectorMXBean of the JVM provides any. GCs=[young generation scavenger, complete scavenger]
+2025-10-20T14:21:37.761+02:00  INFO 15124 --- [graalvm-performance-test] [           main] [                                                 ] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2025-10-20T14:21:37.776+02:00  INFO 15124 --- [graalvm-performance-test] [           main] [                                                 ] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2025-10-20T14:21:37.777+02:00  INFO 15124 --- [graalvm-performance-test] [           main] [                                                 ] .j.g.g.GraalvmPerformanceTestApplication : Started GraalvmPerformanceTestApplication in 0.201 seconds (process running for 0.213)
 ```
 
-## 3. GET API - Fetch 100000 records with concurrency 10 from MongoDB
-
+## 3. GET API - Fetch 100000 records from MongoDB
 ```
-oha -n 100000 -c 10 http://localhost:8080/api/employees
+oha -n 100000 http://localhost:8080/api/employees
 ```
 
 #### Progress
-![screenshot](results_jdk/100000_No_Data_GET_Progress.png)
+![screenshot](results_graalvm/100000_No_Data_GET_Progress.png)
 #### Results
-![screenshot](results_jdk/100000_No_Data_GET_Results.png)
+![screenshot](results_graalvm/100000_No_Data_GET_Results.png)
 
 
 ## 4. POST API - Insert 100000 records into MongoDB
 ```
-oha -n 100000 -c 10 http://localhost:8080/api/employees/new -m POST
+oha -n 100000 http://localhost:8080/api/employees/new -m POST
 ```
 
 #### Progress
-![screenshot](results_jdk/100000_Insert_POST_Progress_1.png)
-![screenshot](results_jdk/100000_Insert_POST_Progress_2.png)
+![screenshot](results_graalvm/100000_Insert_POST_Progress_1.png)
+![screenshot](results_graalvm/100000_Insert_POST_Progress_2.png)
 
 #### Results
-![screenshot](results_jdk/100000_Insert_POST_Results.png)
+![screenshot](results_graalvm/100000_Insert_POST_Results.png)
 
 ## 5. GET API - (After inserting 100000 records)
 ```
-oha -n 100000 -c 100 http://localhost:8080/api/employees/
+oha -n 100000 http://localhost:8080/api/employees/
 ```
 
-#### Progress without Index
-![screenshot](results_jdk/100000_With_Data_GET_Progress_1.png)
-![screenshot](results_jdk/100000_With_Data_GET_Progress_2.png)
+#### Progress
+![screenshot](results_graalvm/100000_With_Data_GET_Progress_1.png)
+![screenshot](results_graalvm/100000_With_Data_GET_Progress_2.png)
 
-#### Results without Index
-![screenshot](results_jdk/100000_With_Data_GET_Results.png)
-![screenshot](results_jdk/CPU_Hung.png)
-
-## 5. GET API - (After inserting 100000 records with index)
-
-### Create Index on empId field in MongoDB 
-![screenshot](results_jdk/Index_Created.png)
-
-#### Progress with Index
-![screenshot](results_jdk/100000_With_Data_GET_Progress_WithIndex_1.png)
-![screenshot](results_jdk/100000_With_Data_GET_Progress_WithIndex_2.png)
-
-#### Results with Index
-![screenshot](results_jdk/100000_With_Data_GET_WithIndex_Results.png)
+#### Results
+![screenshot](results_graalvm/100000_With_Data_GET_Results.png)
