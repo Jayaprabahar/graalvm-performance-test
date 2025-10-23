@@ -39,9 +39,7 @@ https://github.com/hatoo/oha
 * GET with no data (Startup from BareMetel):-
 ![screenshot](results_comparision/comparision_startup_time_GET_NoData.png)
 
-## 3.2 Performance before and after Startup from baremetel
-* GET with data (Startup from BareMetel):-
-  ![screenshot](results_comparision/comparision_startup_time_GET_WithData.png)
+## 3.2 Performance after servers warmed-up
 * POST (Already started springBoot Server):-
   Once application warmed up from BareMetal, Performance between GraalVM and OpenJDK is almost same. Because there is no warmup time delay.
   ![screenshot](results_comparision/comparision_startup_time_POST.png)
@@ -52,6 +50,7 @@ https://github.com/hatoo/oha
 ## 3.4 Startup Time - Benchmarked
 ![screenshot](results_comparision/comparision_startup_time_oracle.png)
 
+## Advantages
 * Better performance with no code changes
 * Lower memory Footprint
 * Fastest Startup Time
